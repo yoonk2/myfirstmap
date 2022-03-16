@@ -91,7 +91,7 @@ function displayInfowindow(marker, place_name, address_name, lat, lng) {
     <div style="padding:25px;">
         ${place_name}<br>
         ${address_name}<br>
-        <button>등록</button>
+        <button onClick="onSubmit('${place_name}', '${address_name}', ${lat}, ${lng})">등록</button>
     </div>
     `;
     map.panTo(marker.getPosition());
@@ -111,4 +111,19 @@ function removeMarker() {
         markerList[i].setMap(null);
     }
     markerList = [];
+}
+
+function onSubmit(title, address, lat, lng) {
+    $.ajax({
+        url: '/location',
+        data: { title, address, lat, lng },
+        type: 'POST',
+    }).done((response) => {
+        console.log("데이터 요청 성공!");
+        alert("성공!");
+    })
+    .fail((error) => {
+        console.log("데이터 요청 실패!");
+        alert("실패!");
+    })
 }

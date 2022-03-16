@@ -8,4 +8,4 @@ const loactionSchema = new Schema({
     lng : {type:Number, required: true},
 });
 
-module.exports = mongoose.model('Location', loactionSchema);
+module.exports = mongoose.model('location', loactionSchema);

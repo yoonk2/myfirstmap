@@ -1,5 +1,6 @@
 // const e = require("express");
 
+
 var mapOptions = {
     center: new naver.maps.LatLng(37.3595704, 127.105399),
     zoom: 10
@@ -7,22 +8,14 @@ var mapOptions = {
 
 var map = new naver.maps.Map('map', mapOptions);
 
-const data = [
-    {
-        title: "용산역",
-        address: "용산",
-        lat: "37.53115713673271",
-        lng: "126.96453780039253"
-    },
-    {
-        title: "서울역",
-        address: "서울역",
-        lat: "37.554719957315754",
-        lng: "126.97084661288184"
-    }
-];
+$.ajax({
+    url: "/location",
+    type: "GET",
+}).done(response => {
+    if(response.message !== "success") return;
+    const data = response.data;
 
-let markerList = [];
+    let markerList = [];
 let infowindowList = [];
 
 const getClickHandler = (i) => () => {
@@ -73,3 +66,30 @@ for(let i = 0, ii = markerList.length; i < ii; i++) {
     naver.maps.Event.addListener(markerList[i], 'click', getClickHandler(i));
     naver.maps.Event.addListener(map, "click", getClickMap(i));
 }
+
+const cluster1 = {
+    content: `<div class="cluster1"></div>`,
+};
+const cluster2 = {
+    content: `<div class="cluster2"></div>`,
+};
+const cluster3 = {
+    content: `<div class="cluster3"></div>`,
+};
+
+const markerClustering = new MarkerClustering({
+    minClusterSize: 2,
+    maxZoom: 12,
+    map: map,
+    markers: markerList,
+    disableClickZoom:false,
+    gridSize: 20,
+    icons: [cluster1, cluster2, cluster3],
+    indexGenerator: [2,5,10],
+    stylingFunction: (clusterMarker, count) => {
+        $(clusterMarker.getElement()).find("div:first-child").text(count);
+    },
+});
+});
+
+
